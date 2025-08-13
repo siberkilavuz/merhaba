@@ -1,157 +1,353 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <title>Bir Mesajın Var 💌</title>
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Doğum Günü Mesajı</title>
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: radial-gradient(circle, #ffdde1, #ee9ca7);
-      font-family: 'Quicksand', sans-serif;
+    :root{
+      --card-w: 860px;
+      --card-h: 560px;
+      --accent:#900056;
+      --accent2:#ff0088;
+      --text:#1b1b1f;
+      --bg:#ee00ff;
+      --credit-duration: 80s;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%; touch-action: manipulation;}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans";
+      background: radial-gradient(800px 600px at 10% 10%, #e464e4 0%, transparent 60%),
+                  radial-gradient(900px 700px at 90% 90%, #659db5 0%, transparent 60%),
+                  var(--bg);
+      color:var(--text);
+      display:grid; place-items:center; padding:20px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .card{
+      position: relative; width: var(--card-w); height: var(--card-h);
+      max-width: 96vw; max-height: 80vh; aspect-ratio: 43/28;
+      background: #504242; border-radius: 22px; overflow:hidden;
+      box-shadow: 0 12px 40px rgba(0,0,0,.12);
+      border: 1px solid rgba(0,0,0,.06);
+      touch-action: pan-y;
+    }
+    .corner{
+      position:absolute; width:200px; height:200px; border-radius:14px; overflow:hidden; box-shadow:0 6px 18px rgba(0,0,0,.2);
+    }
+    .corner img{
+      width:120%; height:120%; object-fit:cover; object-position:center; display:block; transform:translate(-10%,-10%);
+    }
+    .tl{top:18px; left:18px}
+    .tr{top:18px; right:18px}
+    .bl{bottom:18px; left:18px}
+    .br{bottom:18px; right:18px}
+
+    .credits-wrap{
+      position:absolute; 
+      inset:0; 
+      display:grid; 
+      place-items:center; 
+      padding:60px 80px;
       overflow: hidden;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
-
-    .container {
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 20px;
-      padding: 30px 40px;
-      text-align: center;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 30px rgba(0,0,0,0.1);
-      animation: fadeIn 1.5s ease;
+    .credits-mask{
+      position:relative; 
+      width:100%; 
+      height:100%; 
+      overflow:hidden; 
+      background: linear-gradient(20deg, #222020 20%, #fff9 60%, #ffffff 90%);
     }
-
-    h2 {
-      font-family: 'Pacifico', cursive;
-      font-size: 28px;
-      color: #000000;
-      text-shadow: 1px 1px 5px #00000050;
+    .credits{
+      position:absolute; 
+      left:0; 
+      right:0; 
+      bottom:0; 
+      text-align:center; 
+      font-weight:700; 
+      line-height:1.4; 
+      font-size:clamp(18px,2.2vw,28px);
+      padding:0 12px;
+      transform: translateY(100%);
+      will-change: transform;
     }
-
-    p {
-      font-size: 18px;
-      color: #000000;
-      margin: 20px 0;
-      min-height: 40px;
+    .credits.scrolling{
+      animation: scrollUp var(--credit-duration) linear forwards;
     }
+    .credits .small{font-weight:500; opacity:.75; font-size: .9em}
+    @keyframes scrollUp{from{transform: translateY(100%)} to{transform: translateY(-110%)}}
 
-    button {
-      padding: 12px 30px;
-      font-size: 16px;
-      font-weight: bold;
-      border: none;
-      border-radius: 30px;
-      background: linear-gradient(to right, #ff416c, #ff4b2b);
-      color: white;
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    .fx-layer{pointer-events:none; position:absolute; inset:0; overflow:visible}
+    .confetti{position:absolute; width:10px; height:18px; transform: rotate(0deg); border-radius:2px; opacity:0; animation: confettiFall 3.2s linear forwards}
+    @keyframes confettiFall{
+      0%{opacity:1; transform: translateY(-20px) rotate(0deg)}
+      100%{opacity:0; transform: translateY(110vh) rotate(720deg)}
     }
+    .balloon{position:absolute; width:34px; height:44px; border-radius:50% 50% 45% 45%; background: #ff9; box-shadow: inset -8px -10px 18px rgba(0,0,0,.12);
+      animation: balloonUp 6.5s ease-in forwards}
+    .balloon:after{content:""; position:absolute; bottom:-12px; left:50%; transform:translateX(-50%);
+      width:10px; height:14px; background:inherit; border-radius:2px; clip-path: polygon(50% 0, 0 100%, 100% 100%)}
+    .string{position:absolute; width:2px; height:48px; background: rgba(0,0,0,.25); left:50%; transform:translateX(-50%); top:44px}
+    @keyframes balloonUp{0%{transform: translateY(100vh) scale(.9)} 100%{transform: translateY(-120px) scale(1)}}
 
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 5px 15px rgba(255,65,108,0.4);
+    .modal{position:absolute; inset:0; display:none; place-items:center; background: linear-gradient(180deg, rgba(0,0,0,.0), rgba(0,0,0,.35));}
+    .modal.show{display:grid}
+    .gift{
+      position:relative; width:min(520px, 92vw); background:#fff; border-radius:24px; padding:26px 22px; text-align:center;
+      box-shadow:0 22px 60px rgba(0,0,0,.25); border:1px solid rgba(0,0,0,.08);
     }
+    .gift-head{font-size: clamp(18px, 2.2vw, 26px); font-weight:800; margin-bottom:6px}
+    .gift-sub{font-size: 14px; opacity:.7; margin-bottom:14px}
+    .box-illu{position:relative; height:120px; margin:10px auto 18px auto; width:180px}
+    .box-illu .base{position:absolute; inset:auto 0 0 0; height:72px; background:#f7a; border-radius:12px;}
+    .box-illu .lid{position:absolute; inset:0 0 auto 0; height:46px; background:#333; border-radius:12px 12px 6px 6px; transform-origin:bottom; animation: lidPop 1s ease 0.2s both}
+    .ribbon{position:absolute; inset:0; background: repeating-linear-gradient(90deg, transparent 0 38px, #fff 38px 54px); border-radius:inherit; mix-blend-mode:soft-light}
+    @keyframes lidPop{0%{transform:rotateX(0)} 60%{transform:rotateX(25deg)} 100%{transform:rotateX(0)}}
+    .actions{display:flex; gap:10px; justify-content:center}
+    .btn{cursor:pointer; border:none; padding:10px 14px; border-radius:12px; background:var(--accent); color:#fff; font-weight:700; box-shadow:0 10px 20px rgba(255,77,184,.35)}
+    .btn.secondary{background:#111; box-shadow:none}
+    .info{font-size:12px; opacity:.6; margin-top:8px}
 
-    @keyframes fadeIn {
-      from {opacity: 0; transform: scale(0.95);}
-      to {opacity: 1; transform: scale(1);}
+    .title{position:absolute; left:50%; transform:translateX(-50%); top:18px; font-weight:800; letter-spacing:.5px; background:#00000008; padding:8px 14px; border-radius:12px}
+
+    @media (max-width: 860px){
+      .corner{width:140px; height:140px}
+      .credits-wrap{padding:50px 30px;}
     }
-
-    .hearts {
-      position: absolute;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      z-index: -1;
-    }
-
-    .hearts span {
-      position: absolute;
-      display: block;
-      width: 20px;
-      height: 20px;
-      background: url('https://emoji.slack-edge.com/T02F3BT9Z0Z/red_heart/92a9275480b723b6.png') no-repeat center center / contain;
-      animation: floatHearts 10s linear infinite;
-      opacity: 0.6;
-    }
-
-    @keyframes floatHearts {
-      0% {
-        transform: translateY(100vh) scale(0.5);
-        opacity: 0.2;
-      }
-      100% {
-        transform: translateY(-10vh) scale(1);
-        opacity: 0.8;
-      }
+    @media (max-width: 500px){
+      .credits-wrap{padding:40px 20px;}
+      .credits{font-size:16px;}
     }
   </style>
 </head>
 <body>
+  <div class="card" id="card">
+    <div class="corner tl"><img id="img1" src="C:\Users\LENOVO\Downloads\1.jpg" alt=""></div>
+    <div class="corner tr"><img id="img2" src="C:\Users\LENOVO\Downloads\2.jpg" alt=""></div>
+    <div class="corner bl"><img id="img3" src="C:\Users\LENOVO\Downloads\3.jpg" alt=""></div>
+    <div class="corner br"><img id="img4" src="C:\Users\LENOVO\Downloads\4.jpg" alt=""></div>
 
-<div class="container" id="step1">
-  <h2>MERHABA MEMLEKETİN ABİSİNİN SİZE BİR MESAJI VAR 💌</h2>
-  <button onclick="showStep2()">Mesajı Aç</button>
-</div>
+    <div class="credits-wrap">
+      <div class="credits-mask">
+        <div class="credits" id="credits">
+          Merhaba! ben emin namı değer (memleketin abisi) hshhs neyse bugün 1 ağustos sen bu mesajı okuyorsan 14 ağustos gelmiştir vay be 2 hafta hızlı geçmiş.aslında sadece haftalar değil hızlı geçen,değişen aynı şekilde duygularımızda hızlı değişiyor belkide sen bu mesajı okurken biz konuşmuyoruzdur çünkü şuan tanışma aşamasındayız ve düşüncelerimiz davranışlarımız birbirine uymayabilir tabi yinede olumlu düşünmek lazım ben konuşuyoruz diye umut ediyorum eğer konuşuyorsak bilki unutmuş gibi yapıcam sende muhtemelen hatırlatırsın çünkü tanıdığım kadarıyla açık sözlü birisin. bundan sonrası 13 ağustos silmek istemedim öncekini ben seni tanıyana kadar hiç sevgiyi bu türünden yaşamamıştım ama sen bunu çok güzel yaşattın biz tanışalı , konuşalı 1 ay geçmiştir ve bu 1 ay içerisinde olumlu ve olumsuz bir çok şey yaşadık 1 ay kısa bi süre evet ama biz baya baya 3 ay gibi yaşadık ama ben tek bişey öğrendim. BEN SENİ ÇOK SEVİYORUM GÜL GÜZELİ. şimdi seni bu satırları yazarken dinlediğim şarkı ile baş başa bırakıyorum. gerçektende normun dediği gibi bu dünyayı verseler bi çift göz etmiyor güzel gözlüm.İYİ Kİ DOĞDUN İYİ Kİ HAYATIMDASIN.... ✨
+          <div class="small">GÜL GÜZELİME...</div>
+        </div>
+      </div>
+    </div>
 
-<div class="container" id="step2" style="display:none;">
-  <p>Merhaba dünya güzeli, sana bir şey söyleyeyim mi?</p>
-  <button onclick="showStep3()">Söyle</button>
-</div>
+    <div class="fx-layer" id="fx"></div>
 
-<div class="container" id="step3" style="display:none;">
-  <p id="typewriterText"></p>
-</div>
+    <div class="modal" id="modal">
+      <div class="gift">
+        <div class="gift-head">İYİ Kİ DOĞDUN GÜL GÜZELİ...</div>
+        <div class="gift-sub">Norm Ender x Ebru Gündeş – "Bir Çift Göz"</div>
+        <div class="box-illu">
+          <div class="base"><div class="ribbon"></div></div>
+          <div class="lid"><div class="ribbon"></div></div>
+        </div>
+        <div class="actions">
+          <button class="btn" id="playBtn">▶ Şarkıyı Çal</button>
+          <button class="btn secondary" id="replayBtn">↻ Baştan İzle</button>
+        </div>
+        <div class="info">Not: Tarayıcı politikaları nedeniyle ses oynatımı için bir tıklama gerekebilir.</div>
+      </div>
+    </div>
+  </div>
 
-<div class="hearts" id="hearts-container">
-  <!-- Kalpler -->
-</div>
+  <script>
+    const credits = document.getElementById('credits');
+    const fx = document.getElementById('fx');
+    const modal = document.getElementById('modal');
+    const playBtn = document.getElementById('playBtn');
+    const replayBtn = document.getElementById('replayBtn');
+    const card = document.getElementById('card');
+    
+    // Fotoğraf seçimi için input elementleri
+    const img1 = document.getElementById('img1');
+    const img2 = document.getElementById('img2');
+    const img3 = document.getElementById('img3');
+    const img4 = document.getElementById('img4');
+    
+    // YouTube linki
+    const youtubeLink = "hhttps://www.youtube.com/watch?v=qDxfNmR95dM&list=RDqDxfNmR95dM&start_radio=1"; // Buraya istediğiniz YouTube linkini ekleyin
 
-<script>
-  function showStep2() {
-    document.getElementById('step1').style.display = 'none';
-    document.getElementById('step2').style.display = 'block';
-  }
+    // Animasyon durumu
+    let isPlaying = false;
+    let animationId = null;
+    let startY = 0;
+    let currentY = 0;
+    let isDragging = false;
+    let pausePosition = 0;
 
-  function showStep3() {
-    document.getElementById('step2').style.display = 'none';
-    document.getElementById('step3').style.display = 'block';
-    typeWriter("Ben sana her şeyden çok değer veriyorum ve... Seni seviyorum 💖");
-    generateHearts();
-  }
+    // Başlangıçta animasyonu başlat
+    startAnimation();
 
-  function typeWriter(text) {
-    const elem = document.getElementById("typewriterText");
-    let i = 0;
-    function typing() {
-      if (i < text.length) {
-        elem.innerHTML += text.charAt(i);
-        i++;
-        setTimeout(typing, 50);
+    // Dokunmatik etkileşimler
+    card.addEventListener('touchstart', handleTouchStart, {passive: false});
+    card.addEventListener('touchmove', handleTouchMove, {passive: false});
+    card.addEventListener('touchend', handleTouchEnd, {passive: false});
+    
+    // Fare etkileşimleri
+    card.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseEnd);
+
+    credits.addEventListener('animationend', ()=>{
+      blastConfetti(400);
+      launchBalloons(50);
+      setTimeout(()=> modal.classList.add('show'), 1500);
+      isPlaying = false;
+    });
+
+    playBtn.addEventListener('click', ()=>{
+      window.open(youtubeLink, '_blank');
+    });
+
+    replayBtn.addEventListener('click', resetShow);
+
+    function resetShow(){
+      modal.classList.remove('show');
+      fx.innerHTML = '';
+      stopAnimation();
+      startAnimation();
+    }
+
+    function startAnimation() {
+      credits.classList.add('scrolling');
+      isPlaying = true;
+    }
+
+    function stopAnimation() {
+      credits.classList.remove('scrolling');
+      isPlaying = false;
+      pausePosition = getCurrentScrollPosition();
+    }
+
+    function getCurrentScrollPosition() {
+      const style = window.getComputedStyle(credits);
+      const matrix = new WebKitCSSMatrix(style.transform);
+      return matrix.m42; // Y pozisyonu
+    }
+
+    function setScrollPosition(y) {
+      credits.style.transform = `translateY(${y}px)`;
+    }
+
+    function handleTouchStart(e) {
+      e.preventDefault();
+      startY = e.touches[0].clientY;
+      currentY = getCurrentScrollPosition();
+      isDragging = true;
+      stopAnimation();
+    }
+
+    function handleTouchMove(e) {
+      if (!isDragging) return;
+      e.preventDefault();
+      const y = e.touches[0].clientY;
+      const deltaY = y - startY;
+      setScrollPosition(currentY + deltaY);
+    }
+
+    function handleTouchEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      pausePosition = getCurrentScrollPosition();
+    }
+
+    function handleMouseDown(e) {
+      e.preventDefault();
+      startY = e.clientY;
+      currentY = getCurrentScrollPosition();
+      isDragging = true;
+      stopAnimation();
+    }
+
+    function handleMouseMove(e) {
+      if (!isDragging) return;
+      e.preventDefault();
+      const y = e.clientY;
+      const deltaY = y - startY;
+      setScrollPosition(currentY + deltaY);
+    }
+
+    function handleMouseEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      pausePosition = getCurrentScrollPosition();
+    }
+
+    // Fotoğraf yükleme fonksiyonları
+    function setupImageUpload(element) {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.style.display = 'none';
+      document.body.appendChild(input);
+      
+      element.addEventListener('click', () => {
+        input.click();
+      });
+      
+      input.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            element.src = event.target.result;
+          };
+          reader.readAsDataURL(e.target.files[0]);
+        }
+      });
+    }
+
+    // Tüm köşe resimlerine yükleme özelliği ekle
+    setupImageUpload(img1);
+    setupImageUpload(img2);
+    setupImageUpload(img3);
+    setupImageUpload(img4);
+
+    function blastConfetti(count){
+      const colors = ['#ff4db8','#6ee7ff','#ffd166','#7cffcb','#c084fc','#fca5a5'];
+      for(let i=0;i<count;i++){
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        const size = 6 + Math.random()*10;
+        c.style.width = size+ 'px';
+        c.style.height = size*1.6 + 'px';
+        c.style.left = (Math.random()*100) + 'vw';
+        c.style.top = (-20 - Math.random()*200) + 'px';
+        c.style.background = colors[Math.floor(Math.random()*colors.length)];
+        c.style.transform = `rotate(${Math.random()*360}deg)`;
+        c.style.animationDelay = (Math.random()*0.5) + 's';
+        c.style.animationDuration = (2 + Math.random()*2) + 's';
+        fx.appendChild(c);
+        setTimeout(()=> c.remove(), 4000);
       }
     }
-    typing();
-  }
 
-  function generateHearts() {
-    const container = document.getElementById('hearts-container');
-    for (let i = 0; i < 20; i++) {
-      const span = document.createElement('span');
-      span.style.left = Math.random() * 100 + '%';
-      span.style.animationDelay = Math.random() * 5 + 's';
-      container.appendChild(span);
+    function launchBalloons(count){
+      for(let i=0;i<count;i++){
+        const b = document.createElement('div');
+        b.className = 'balloon';
+        b.style.left = (4 + Math.random()*92) + '%';
+        b.style.bottom = (-40 - Math.random()*120) + 'px';
+        b.style.background = randomBalloonColor();
+        b.style.animationDelay = (Math.random()*0.5) + 's';
+        b.style.animationDuration = (5 + Math.random()*3.5) + 's';
+        const s = document.createElement('div');
+        s.className = 'string';
+        b.appendChild(s);
+        fx.appendChild(b);
+        setTimeout(()=> b.remove(), 8000);
+      }
     }
-  }
-</script>
-
+    
+    function randomBalloonColor(){
+      const palette = ['#ff8fab','#ffd6a5','#fdffb6','#caffbf','#9bf6ff','#a0c4ff','#bdb2ff'];
+      return palette[Math.floor(Math.random()*palette.length)];
+    }
+  </script>
 </body>
 </html>
